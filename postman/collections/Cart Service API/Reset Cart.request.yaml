@@ -1,0 +1,27 @@
+$kind: http-request
+method: DELETE
+url: '{{baseUrl}}/api/cart'
+order: 1000
+description: >-
+  Clears the whole cart for the test user first, so this collection can be
+  re-run repeatedly and always start from a known, empty state.
+headers:
+  - key: x-user-id
+    value: '{{testUserId}}'
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      console.log('Starting cart-service scenario for test user: ' + pm.environment.get('testUserId'));
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test('cart is empty after reset', function () {
+        const body = pm.response.json();
+        pm.expect(body.items.length).to.eql(0);
+      });
+examples: './.resources/Reset Cart.resources/examples/'

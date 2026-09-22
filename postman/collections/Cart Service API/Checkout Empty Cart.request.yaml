@@ -1,0 +1,20 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/api/cart/checkout'
+order: 2000
+description: Cart is empty at this point in the scenario, so checkout must be rejected.
+headers:
+  - key: x-user-id
+    value: '{{testUserId}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('status is 400', function () {
+        pm.response.to.have.status(400);
+      });
+
+      pm.test('error message is Cart is empty', function () {
+        const body = pm.response.json();
+        pm.expect(body.error).to.eql('Cart is empty');
+      });

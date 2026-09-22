@@ -1,0 +1,19 @@
+$kind: http-example
+name: Cart Reset
+request:
+  url: '{{baseUrl}}/api/cart'
+  method: DELETE
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    - key: Content-Type
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "userId": "postman-cli-test-user",
+        "items": [],
+        "total": 0
+      }

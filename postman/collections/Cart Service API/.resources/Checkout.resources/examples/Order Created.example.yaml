@@ -1,0 +1,30 @@
+$kind: http-example
+name: Order Created
+request:
+  url: '{{baseUrl}}/api/cart/checkout'
+  method: POST
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    - key: Content-Type
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "ord_a1b2c3",
+        "userId": "postman-cli-test-user",
+        "items": [
+          {
+            "productId": "p1",
+            "name": "Wireless Noise-Cancelling Headphones",
+            "price": 149.99,
+            "quantity": 5,
+            "subtotal": 749.95
+          }
+        ],
+        "total": 749.95,
+        "status": "confirmed",
+        "createdAt": "2026-09-22T00:00:00.000Z"
+      }

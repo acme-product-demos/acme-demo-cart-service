@@ -1,0 +1,29 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/api/cart/items'
+order: 4000
+description: Adds 1x product p3 (Ceramic Pour-Over Coffee Set) to the cart.
+headers:
+  - key: x-user-id
+    value: '{{testUserId}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "productId": "p3",
+      "quantity": 1
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test('cart has exactly two items', function () {
+        const body = pm.response.json();
+        pm.expect(body.items.length).to.eql(2);
+      });

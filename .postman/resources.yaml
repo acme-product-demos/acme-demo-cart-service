@@ -1,0 +1,12 @@
+cloudResources:
+  collections:
+    ../postman/collections/Cart Service API: 49130935-91b43dd2-ad44-4e76-91a4-a75583556191
+  environments:
+    ../postman/environments/cart-service-local.environment.yaml: 49130935-d53de91c-a433-4aec-9e32-afe3fdf1353f
+  specs:
+    ../postman/specs/cart-service/index.yaml: 3ea9cf30-0c24-4065-a9f0-3f4dbee3d618
+resourceNameMappings:
+  specs:
+    - ../postman/specs/cart-service/index.yaml: index.yaml
+workspace:
+  id: 52c2bad9-bbaa-4aa1-abe9-07d3baf4907c

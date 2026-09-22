@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  title: Cart Service API
+  description: >-
+    Cart microservice for the acme-corp demo. Cart contents are scoped per
+    user via the `x-user-id` request header (defaults to `demo-user` when
+    omitted). Item names and prices are enriched live from product-service
+    on every read; checkout creates a real order via order-service.
+  version: 0.1.0
+servers:
+  - url: http://localhost:4002
+    description: Local cart-service
+paths:
+  /api/cart:
+    get:
+      operationId: getCart
+      summary: Get the current user's cart
+      description: >-
+        Returns the enriched cart for the requesting user. Each item's
+        name/price is fetched live from product-service; if a productId
+        does not resolve there, name falls back to "Unknown product" and
+        price to 0.
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/UserIdHeader'
+      responses:
+        '200':
+          description: The user's current cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+    delete:
+      operationId: clearCart
+      summary: Clear the current user's entire cart
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/UserIdHeader'
+      responses:
+        '200':
+          description: The now-empty cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+  /api/cart/items:
+    post:
+      operationId: addCartItem
+      summary: Add an item to the cart (or increment its quantity)
+      description: >-
+        If productId already has a line in the cart, quantity is
+        incremented by the given amount; otherwise a new line is added.
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/UserIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+      responses:
+        '200':
+          description: The updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Invalid productId/quantity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/cart/items/{productId}:
+    parameters:
+      - $ref: '#/components/parameters/ProductIdPath'
+    put:
+      operationId: setCartItemQuantity
+      summary: Set an item's quantity exactly
+      description: >-
+        Sets the line's quantity to exactly the given value. A quantity of
+        0 removes the line entirely. If the productId is not already in
+        the cart and quantity > 0, a new line is added.
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/UserIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetQuantityRequest'
+      responses:
+        '200':
+          description: The updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Invalid quantity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: removeCartItem
+      summary: Remove an item from the cart entirely
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/UserIdHeader'
+      responses:
+        '200':
+          description: The updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+  /api/cart/checkout:
+    post:
+      operationId: checkout
+      summary: Check out the current cart and create an order
+      description: >-
+        Creates an order for the cart's current contents via a real call
+        to order-service, then clears the cart. Fails with 400 if the
+        cart is empty.
+      tags: [Cart]
+      parameters:
+        - $ref: '#/components/parameters/UserIdHeader'
+      responses:
+        '201':
+          description: Order created successfully; cart is now cleared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Cart is empty, nothing to check out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: order-service could not be reached or rejected the order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    UserIdHeader:
+      name: x-user-id
+      in: header
+      required: true
+      description: >-
+        Scopes the cart to a user. In practice defaults to "demo-user"
+        server-side when omitted, but callers should always send it
+        explicitly.
+      schema:
+        type: string
+      example: demo-user
+    ProductIdPath:
+      name: productId
+      in: path
+      required: true
+      description: Product identifier, as known to product-service.
+      schema:
+        type: string
+      example: p1
+  schemas:
+    CartItem:
+      type: object
+      required: [productId, name, price, quantity, subtotal]
+      properties:
+        productId:
+          type: string
+          example: p1
+        name:
+          type: string
+          description: >-
+            Enriched live from product-service. "Unknown product" if the
+            productId does not resolve there.
+          example: Wireless Noise-Cancelling Headphones
+        price:
+          type: number
+          format: double
+          description: Unit price, enriched live from product-service. 0 if unresolved.
+          example: 149.99
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+        subtotal:
+          type: number
+          format: double
+          description: price * quantity
+          example: 299.98
+    Cart:
+      type: object
+      required: [userId, items, total]
+      properties:
+        userId:
+          type: string
+          example: demo-user
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        total:
+          type: number
+          format: double
+          description: Sum of all items' subtotal
+          example: 299.98
+    AddItemRequest:
+      type: object
+      required: [productId, quantity]
+      properties:
+        productId:
+          type: string
+          example: p1
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+    SetQuantityRequest:
+      type: object
+      required: [quantity]
+      properties:
+        quantity:
+          type: integer
+          minimum: 0
+          description: Exact quantity to set. 0 removes the line.
+          example: 5
+    Order:
+      type: object
+      required: [id, userId, items, total, status, createdAt]
+      properties:
+        id:
+          type: string
+          example: ord_a1b2c3
+        userId:
+          type: string
+          example: demo-user
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        total:
+          type: number
+          format: double
+          example: 749.95
+        status:
+          type: string
+          enum: [confirmed]
+          example: confirmed
+        createdAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: Cart is empty

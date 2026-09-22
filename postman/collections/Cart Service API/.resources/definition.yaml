@@ -1,0 +1,9 @@
+$kind: collection
+name: Cart Service API
+description: >-
+  Stateful, ordered test scenario against cart-service (http://localhost:4002).
+  Requests are meant to run top-to-bottom, in order: reset the cart, prove
+  checkout rejects an empty cart, add two real products (enriched live from
+  product-service), inspect and mutate the cart, then check out for real
+  (a live call to order-service) and confirm the cart is cleared. Every
+  request is scoped to a single test user via the x-user-id header.

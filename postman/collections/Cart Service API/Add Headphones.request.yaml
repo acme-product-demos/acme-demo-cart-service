@@ -1,0 +1,39 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/api/cart/items'
+order: 3000
+description: Adds 2x product p1 (Wireless Noise-Cancelling Headphones) to the cart.
+headers:
+  - key: x-user-id
+    value: '{{testUserId}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "productId": "p1",
+      "quantity": 2
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test('cart has exactly one item', function () {
+        const body = pm.response.json();
+        pm.expect(body.items.length).to.eql(1);
+      });
+
+      pm.test('headphones name was enriched from product-service (not Unknown product)', function () {
+        const body = pm.response.json();
+        pm.expect(body.items[0].name).to.not.eql('Unknown product');
+      });
+
+      pm.test('headphones subtotal is 299.98', function () {
+        const body = pm.response.json();
+        pm.expect(body.items[0].subtotal).to.eql(299.98);
+      });

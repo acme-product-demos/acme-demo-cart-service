@@ -1,0 +1,10 @@
+name: Cart Service Local
+values:
+  - key: baseUrl
+    value: 'http://localhost:4002'
+    enabled: true
+    type: default
+  - key: testUserId
+    value: postman-cli-test-user
+    enabled: true
+    type: default
