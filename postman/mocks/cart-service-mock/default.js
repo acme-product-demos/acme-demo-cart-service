@@ -11,13 +11,13 @@ const server = http.createServer((req, res) => {
   // @endpoint GET /api/cart
   if (req.method === 'GET' && pathname === '/api/cart') {
     res.writeHead(200, {"Content-Type":"application/json"});
-    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98}],"total":299.98}));
+    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p3","name":"Ceramic Pour-Over Coffee Set","price":39.5,"quantity":1,"subtotal":39.5}],"total":339.48}));
   }
 
   // @endpoint DELETE /api/cart
   if (req.method === 'DELETE' && pathname === '/api/cart') {
     res.writeHead(200, {"Content-Type":"application/json"});
-    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98}],"total":299.98}));
+    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p3","name":"Ceramic Pour-Over Coffee Set","price":39.5,"quantity":1,"subtotal":39.5}],"total":339.48}));
   }
 
   // @endpoint POST /api/cart/items
@@ -32,7 +32,7 @@ const server = http.createServer((req, res) => {
 
     // "The updated cart" — default
     res.writeHead(200, {"Content-Type":"application/json"});
-    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98}],"total":299.98}));
+    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p3","name":"Ceramic Pour-Over Coffee Set","price":39.5,"quantity":1,"subtotal":39.5}],"total":339.48}));
   }
 
   // @endpoint PUT /api/cart/items/:productId
@@ -47,13 +47,13 @@ const server = http.createServer((req, res) => {
 
     // "The updated cart" — default
     res.writeHead(200, {"Content-Type":"application/json"});
-    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98}],"total":299.98}));
+    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p3","name":"Ceramic Pour-Over Coffee Set","price":39.5,"quantity":1,"subtotal":39.5}],"total":339.48}));
   }
 
   // @endpoint DELETE /api/cart/items/:productId
   if (req.method === 'DELETE' && /^\/api\/cart\/items\/([^/]+)$/.test(pathname)) {
     res.writeHead(200, {"Content-Type":"application/json"});
-    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98}],"total":299.98}));
+    return res.end(JSON.stringify({"userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p3","name":"Ceramic Pour-Over Coffee Set","price":39.5,"quantity":1,"subtotal":39.5}],"total":339.48}));
   }
 
   // @endpoint POST /api/cart/checkout
@@ -69,12 +69,12 @@ const server = http.createServer((req, res) => {
     // "order-service could not be reached or rejected the order" — when x-mock-response-code: 502
     if (requestedStatusCode === '502') {
       res.writeHead(502, {"Content-Type":"application/json"});
-      return res.end(JSON.stringify({"error":"Cart is empty"}));
+      return res.end(JSON.stringify({"error":"Could not create order"}));
     }
 
     // "Order created successfully; cart is now cleared" — default
     res.writeHead(201, {"Content-Type":"application/json"});
-    return res.end(JSON.stringify({"id":"ord_a1b2c3","userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98}],"total":749.95,"status":"confirmed","createdAt":"2023-02-27T22:24:03.264Z"}));
+    return res.end(JSON.stringify({"id":"ord_a1b2c3","userId":"demo-user","items":[{"productId":"p1","name":"Wireless Noise-Cancelling Headphones","price":149.99,"quantity":2,"subtotal":299.98},{"productId":"p3","name":"Ceramic Pour-Over Coffee Set","price":39.5,"quantity":1,"subtotal":39.5}],"total":339.48,"status":"confirmed","createdAt":"2023-02-27T22:24:03.264Z"}));
   }
 
   res.writeHead(404, { 'Content-Type': 'application/json' });
