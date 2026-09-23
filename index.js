@@ -15,6 +15,10 @@ const ORDER_SERVICE_URL = 'http://localhost:4003';
 app.use(cors());
 app.use(express.json());
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'cart-service' });
+});
+
 // In-memory cart storage: userId -> [{ productId, quantity }]
 const carts = new Map();
 
