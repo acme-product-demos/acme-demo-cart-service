@@ -1,0 +1,10 @@
+version: 1
+id: c22c032b-562b-46f0-aab2-e5d363cb97e3
+name: Cart Service Mock
+slug: cart-service-mock
+protocol: http
+port: 5002
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true

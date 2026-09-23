@@ -3,6 +3,8 @@ cloudResources:
     ../postman/collections/Cart Service API: 49130935-91b43dd2-ad44-4e76-91a4-a75583556191
   environments:
     ../postman/environments/cart-service-local.environment.yaml: 49130935-d53de91c-a433-4aec-9e32-afe3fdf1353f
+  mocks:
+    ../postman/mocks/cart-service-mock/config.yaml: c22c032b-562b-46f0-aab2-e5d363cb97e3
   specs:
     ../postman/specs/cart-service/index.yaml: 3ea9cf30-0c24-4065-a9f0-3f4dbee3d618
 resourceNameMappings:
