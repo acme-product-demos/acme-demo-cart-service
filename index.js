@@ -9,8 +9,10 @@ const app = express();
 const PORT = 4002;
 
 // Easy to spot/change base URLs for the services this cart depends on.
-const PRODUCT_SERVICE_URL = 'http://localhost:4001';
-const ORDER_SERVICE_URL = 'http://localhost:4003';
+// Overridable via env so CI (which only starts cart-service itself) can
+// point at the deployed mocks instead of localhost.
+const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:4001';
+const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || 'http://localhost:4003';
 
 app.use(cors());
 app.use(express.json());

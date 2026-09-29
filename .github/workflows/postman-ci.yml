@@ -21,6 +21,12 @@ jobs:
       - name: Authenticate Postman CLI
         run: postman login --with-api-key "${{ secrets.POSTMAN_API_KEY }}"
       - name: Start service in background
+        env:
+          # This job only starts cart-service itself. Point its cross-service
+          # calls at the deployed public mocks so enrichment/checkout work in
+          # CI instead of hitting an unreachable localhost.
+          PRODUCT_SERVICE_URL: https://product-service-mock.mock.product-demos.postman.dev
+          ORDER_SERVICE_URL: https://order-service-mock.mock.product-demos.postman.dev
         run: nohup npm start > server.log 2>&1 &
       - name: Wait for service to be healthy
         run: |
