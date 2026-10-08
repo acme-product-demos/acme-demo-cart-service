@@ -2,9 +2,13 @@ cloudResources:
   collections:
     ../postman/collections/Cart Service API: 49130935-91b43dd2-ad44-4e76-91a4-a75583556191
   environments:
+    ../postman/environments/cart-service-beta.environment.yaml: 49130935-74b0eb2f-9428-49aa-9f27-75dd4575c5ab
     ../postman/environments/cart-service-local.environment.yaml: 49130935-d53de91c-a433-4aec-9e32-afe3fdf1353f
     ../postman/environments/cart-service-mock.environment.yaml: 49130935-e6658a59-7e6a-48fc-ac70-539b3aab564b
+    ../postman/environments/cart-service-prod.environment.yaml: 49130935-bd89adf3-6037-47fd-9838-78e4fa107edb
   mocks:
+    ../postman/mocks/cart-service-mock-beta/config.yaml: 01a11a95-b4b6-73d8-8904-141bc0fcdad0
+    ../postman/mocks/cart-service-mock-prod/config.yaml: 01a11a95-b4b4-7069-8e5e-33be7eedf69a
     ../postman/mocks/cart-service-mock/config.yaml: c22c032b-562b-46f0-aab2-e5d363cb97e3
   specs:
     ../postman/specs/cart-service/index.yaml: 3ea9cf30-0c24-4065-a9f0-3f4dbee3d618

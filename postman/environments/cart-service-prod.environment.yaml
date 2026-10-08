@@ -1,0 +1,10 @@
+name: Cart Service Prod
+values:
+  - key: baseUrl
+    value: 'https://cart-service-mock-prod.mock.product-demos.postman.dev'
+    enabled: true
+    type: default
+  - key: testUserId
+    value: 'demo-user'
+    enabled: true
+    type: default
