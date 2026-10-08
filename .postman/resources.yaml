@@ -10,6 +10,6 @@ cloudResources:
     ../postman/specs/cart-service/index.yaml: 3ea9cf30-0c24-4065-a9f0-3f4dbee3d618
 resourceNameMappings:
   specs:
-    - ../postman/specs/cart-service/index.yaml: index.yaml
+    - ../postman/specs/cart-service/index.yaml: Cart Service API
 workspace:
   id: 52c2bad9-bbaa-4aa1-abe9-07d3baf4907c
