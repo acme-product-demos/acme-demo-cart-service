@@ -14,6 +14,12 @@ const PORT = 4002;
 const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:4001';
 const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || 'http://localhost:4003';
 
+// When set (e.g. by CI), tags outbound calls to the mocks so a run's state
+// stays separate from the Monitor's/manual use's. No-op when unset.
+const MOCK_SESSION_HEADERS = process.env.MOCK_SESSION_ID
+  ? { 'x-mock-session': process.env.MOCK_SESSION_ID }
+  : {};
+
 app.use(cors());
 app.use(express.json());
 
@@ -40,7 +46,9 @@ function getCartLines(userId) {
 // so callers can fall back gracefully instead of crashing the request.
 async function fetchProduct(productId) {
   try {
-    const res = await fetch(`${PRODUCT_SERVICE_URL}/api/products/${productId}`);
+    const res = await fetch(`${PRODUCT_SERVICE_URL}/api/products/${productId}`, {
+      headers: { ...MOCK_SESSION_HEADERS },
+    });
     if (!res.ok) {
       return null;
     }
@@ -176,7 +184,7 @@ router.post('/checkout', async (req, res) => {
   try {
     const orderRes = await fetch(`${ORDER_SERVICE_URL}/api/orders`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...MOCK_SESSION_HEADERS },
       body: JSON.stringify(orderPayload),
     });
 
