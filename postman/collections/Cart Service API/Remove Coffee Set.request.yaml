@@ -1,14 +1,13 @@
 $kind: http-request
 method: DELETE
-url: '{{baseUrl}}/api/cart/items/p3'
+url: "{{baseUrl}}/api/cart/items/p3"
 order: 7000
 description: Removes product p3 entirely, leaving only the headphones line.
 headers:
-  - key: x-user-id
-    value: '{{testUserId}}'
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test('status is 200', function () {
         pm.response.to.have.status(200);
@@ -18,3 +17,4 @@ scripts:
         const body = pm.response.json();
         pm.expect(body.items.length).to.eql(1);
       });
+    language: text/javascript

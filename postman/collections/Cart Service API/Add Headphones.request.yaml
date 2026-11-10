@@ -1,13 +1,12 @@
 $kind: http-request
 method: POST
-url: '{{baseUrl}}/api/cart/items'
+url: "{{baseUrl}}/api/cart/items"
 order: 3000
 description: Adds 2x product p1 (Wireless Noise-Cancelling Headphones) to the cart.
 headers:
-  - key: x-user-id
-    value: '{{testUserId}}'
-  - key: Content-Type
-    value: application/json
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
+  Content-Type: application/json
 body:
   type: json
   content: |-
@@ -17,7 +16,6 @@ body:
     }
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test('status is 200', function () {
         pm.response.to.have.status(200);
@@ -37,3 +35,4 @@ scripts:
         const body = pm.response.json();
         pm.expect(body.items[0].subtotal).to.eql(299.98);
       });
+    language: text/javascript

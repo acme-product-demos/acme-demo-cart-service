@@ -1,14 +1,13 @@
 $kind: http-request
 method: GET
-url: '{{baseUrl}}/api/cart'
+url: "{{baseUrl}}/api/cart"
 order: 9000
 description: Confirms the cart was cleared as a side effect of a successful checkout.
 headers:
-  - key: x-user-id
-    value: '{{testUserId}}'
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test('status is 200', function () {
         pm.response.to.have.status(200);
@@ -18,3 +17,4 @@ scripts:
         const body = pm.response.json();
         pm.expect(body.items.length).to.eql(0);
       });
+    language: text/javascript

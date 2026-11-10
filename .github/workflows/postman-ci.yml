@@ -42,6 +42,15 @@ jobs:
         run: postman collection lint "postman/collections/Cart Service API" -f error
       - name: Collection run (live contract test)
         run: postman collection run "postman/collections/Cart Service API" -e postman/environments/cart-service-local.environment.yaml
+      - name: Contract test against deployed mock (publisher-driven)
+        # Deployed mocks run multiple non-sticky instances with no shared
+        # memory (confirmed separately), so the full multi-step cart/
+        # checkout flow flakes against them through no fault of the mock's
+        # contract. Scoped to the self-contained negative tests instead:
+        # each is a single request with no cross-request state dependency,
+        # so it's a reliable gate that a bad body still gets rejected by
+        # whatever's actually deployed, not just by the local mock.
+        run: postman collection run "postman/collections/Cart Service API" -e postman/environments/cart-service-mock.environment.yaml --env-var "mockSessionId=ci-${{ github.run_id }}-${{ github.run_attempt }}" -i "Add Item Rejects Unexpected Field" -i "Set Quantity Rejects Unexpected Field"
       - name: AI readiness gate (spec)
         run: postman spec ai-readiness postman/specs/cart-service/index.yaml --min-score 70
       - name: AI readiness gate (collection)

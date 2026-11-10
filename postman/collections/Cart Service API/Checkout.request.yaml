@@ -1,16 +1,13 @@
 $kind: http-request
 method: POST
-url: '{{baseUrl}}/api/cart/checkout'
+url: "{{baseUrl}}/api/cart/checkout"
 order: 8000
-description: >-
-  Real checkout: cart-service calls order-service to create an order from the
-  cart's contents, then clears the cart on success.
+description: "Real checkout: cart-service calls order-service to create an order from the cart's contents, then clears the cart on success."
 headers:
-  - key: x-user-id
-    value: '{{testUserId}}'
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test('status is 201', function () {
         pm.response.to.have.status(201);
@@ -31,4 +28,5 @@ scripts:
         const body = pm.response.json();
         pm.expect(body.status).to.eql('confirmed');
       });
-examples: './.resources/Checkout.resources/examples/'
+    language: text/javascript
+examples: ./.resources/Checkout.resources/examples

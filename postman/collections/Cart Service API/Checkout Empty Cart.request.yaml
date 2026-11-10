@@ -1,14 +1,13 @@
 $kind: http-request
 method: POST
-url: '{{baseUrl}}/api/cart/checkout'
+url: "{{baseUrl}}/api/cart/checkout"
 order: 2000
 description: Cart is empty at this point in the scenario, so checkout must be rejected.
 headers:
-  - key: x-user-id
-    value: '{{testUserId}}'
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test('status is 400', function () {
         pm.response.to.have.status(400);
@@ -18,3 +17,4 @@ scripts:
         const body = pm.response.json();
         pm.expect(body.error).to.eql('Cart is empty');
       });
+    language: text/javascript

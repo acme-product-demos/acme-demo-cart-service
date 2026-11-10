@@ -1,14 +1,13 @@
 $kind: http-request
 method: GET
-url: '{{baseUrl}}/api/cart'
+url: "{{baseUrl}}/api/cart"
 order: 5000
 description: Confirms the running total after both items have been added.
 headers:
-  - key: x-user-id
-    value: '{{testUserId}}'
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test('status is 200', function () {
         pm.response.to.have.status(200);
@@ -18,3 +17,4 @@ scripts:
         const body = pm.response.json();
         pm.expect(body.total).to.eql(339.48);
       });
+    language: text/javascript

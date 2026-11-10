@@ -8,3 +8,7 @@ values:
     value: 'demo-user'
     enabled: true
     type: default
+  - key: mockSessionId
+    value: ''
+    enabled: true
+    type: default

@@ -1,13 +1,12 @@
 $kind: http-request
 method: PUT
-url: '{{baseUrl}}/api/cart/items/p1'
+url: "{{baseUrl}}/api/cart/items/p1"
 order: 6000
 description: Sets the p1 line's quantity to exactly 5.
 headers:
-  - key: x-user-id
-    value: '{{testUserId}}'
-  - key: Content-Type
-    value: application/json
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
+  Content-Type: application/json
 body:
   type: json
   content: |-
@@ -16,7 +15,6 @@ body:
     }
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test('status is 200', function () {
         pm.response.to.have.status(200);
@@ -28,3 +26,4 @@ scripts:
         pm.expect(p1).to.not.equal(undefined);
         pm.expect(p1.quantity).to.eql(5);
       });
+    language: text/javascript

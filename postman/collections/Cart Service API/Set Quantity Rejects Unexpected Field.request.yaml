@@ -1,0 +1,31 @@
+$kind: http-request
+method: PUT
+url: "{{baseUrl}}/api/cart/items/p1"
+order: 9600
+description: >-
+  Self-contained negative test, independent of cart state: a body with an
+  unexpected field must be rejected with a clear error, not silently
+  accepted.
+headers:
+  x-user-id: "{{testUserId}}"
+  x-mock-session: "{{mockSessionId}}"
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "quantity": 1,
+      "note": "NOT-PART-OF-THE-CONTRACT"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('status is 400', function () {
+        pm.response.to.have.status(400);
+      });
+
+      pm.test('error names the unexpected field', function () {
+        const body = pm.response.json();
+        pm.expect(body.error).to.include('note');
+      });
+    language: text/javascript
