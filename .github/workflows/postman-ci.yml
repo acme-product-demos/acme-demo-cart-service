@@ -41,7 +41,11 @@ jobs:
       - name: Collection lint (structure/style)
         run: postman collection lint "postman/collections/Cart Service API" -f error
       - name: Collection run (live contract test)
-        run: postman collection run "postman/collections/Cart Service API" -e postman/environments/cart-service-local.environment.yaml
+        # Scoped to the pre-existing requests: the two "Rejects Unexpected
+        # Field" negative tests exercise validation that only the mock has
+        # (see the step below) -- the real service was intentionally left
+        # unchanged.
+        run: postman collection run "postman/collections/Cart Service API" -e postman/environments/cart-service-local.environment.yaml -i "Reset Cart" -i "Checkout Empty Cart" -i "Add Headphones" -i "Add Coffee Set" -i "View Cart" -i "Update Headphones Quantity" -i "Remove Coffee Set" -i "Checkout" -i "View Cart After Checkout"
       - name: Contract test against deployed mock (publisher-driven)
         # Deployed mocks run multiple non-sticky instances with no shared
         # memory (confirmed separately), so the full multi-step cart/
