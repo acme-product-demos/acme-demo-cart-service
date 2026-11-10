@@ -1,14 +1,15 @@
 $kind: http-example
 name: Cart Reset
 request:
-  url: '{{baseUrl}}/api/cart'
+  url: "{{baseUrl}}/api/cart"
   method: DELETE
+  headers:
+    x-user-id: "{{testUserId}}"
 response:
   statusCode: 200
   statusText: OK
   headers:
-    - key: Content-Type
-      value: application/json
+    Content-Type: application/json
   body:
     type: json
     content: |-
@@ -17,3 +18,4 @@ response:
         "items": [],
         "total": 0
       }
+order: 1000

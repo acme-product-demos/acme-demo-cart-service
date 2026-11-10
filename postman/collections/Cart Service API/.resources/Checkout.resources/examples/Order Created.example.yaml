@@ -1,14 +1,15 @@
 $kind: http-example
 name: Order Created
 request:
-  url: '{{baseUrl}}/api/cart/checkout'
+  url: "{{baseUrl}}/api/cart/checkout"
   method: POST
+  headers:
+    x-user-id: "{{testUserId}}"
 response:
   statusCode: 201
   statusText: Created
   headers:
-    - key: Content-Type
-      value: application/json
+    Content-Type: application/json
   body:
     type: json
     content: |-
@@ -28,3 +29,4 @@ response:
         "status": "confirmed",
         "createdAt": "2026-09-22T00:00:00.000Z"
       }
+order: 1000
