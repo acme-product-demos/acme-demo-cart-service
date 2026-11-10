@@ -7,6 +7,13 @@ info:
     omitted). Item names and prices are enriched live from product-service
     on every read; checkout creates a real order via order-service.
   version: 0.1.0
+  contact:
+    name: acme-corp demo team
+    email: avinash.choudhary@postman.com
+    url: https://github.com/acme-product-demos/acme-demo-cart-service
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 servers:
   - url: http://localhost:4002
     description: Local cart-service
