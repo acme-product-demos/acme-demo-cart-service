@@ -27,6 +27,8 @@ jobs:
           # CI instead of hitting an unreachable localhost.
           PRODUCT_SERVICE_URL: https://product-service-mock.mock.product-demos.postman.dev
           ORDER_SERVICE_URL: https://order-service-mock.mock.product-demos.postman.dev
+          INVENTORY_SERVICE_URL: https://inventory-service-mock-b08713.mock.product-demos.postman.dev
+          PAYMENT_SERVICE_URL: https://payment-service-mock-cfa754.mock.product-demos.postman.dev
           MOCK_SESSION_ID: ci-${{ github.run_id }}-${{ github.run_attempt }}
         run: nohup npm start > server.log 2>&1 &
       - name: Wait for service to be healthy
