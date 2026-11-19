@@ -13,6 +13,8 @@ const PORT = 4002;
 // point at the deployed mocks instead of localhost.
 const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://localhost:4001';
 const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || 'http://localhost:4003';
+const INVENTORY_SERVICE_URL = process.env.INVENTORY_SERVICE_URL || 'http://localhost:4004';
+const PAYMENT_SERVICE_URL = process.env.PAYMENT_SERVICE_URL || 'http://localhost:4006';
 
 // When set (e.g. by CI), tags outbound calls to the mocks so a run's state
 // stays separate from the Monitor's/manual use's. No-op when unset.
@@ -181,11 +183,50 @@ router.post('/checkout', async (req, res) => {
     total: cart.total,
   };
 
+  // Reserve stock for every line before charging anything. Any failure here
+  // (service down, insufficient stock) aborts checkout without touching the
+  // cart or payment.
+  for (const item of cart.items) {
+    try {
+      const reserveRes = await fetch(`${INVENTORY_SERVICE_URL}/api/inventory/${item.productId}/reserve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...MOCK_SESSION_HEADERS },
+        body: JSON.stringify({ quantity: item.quantity }),
+      });
+      if (!reserveRes.ok) {
+        return res.status(502).json({ error: 'Could not reserve inventory' });
+      }
+    } catch (err) {
+      return res.status(502).json({ error: 'Could not reserve inventory' });
+    }
+  }
+
+  // Charge payment for the cart total. This is the demo's usual
+  // dependency-down failure mode: stop payment-service and checkout fails
+  // here even though cart-service itself is up.
+  let paymentTransactionId;
+  try {
+    const paymentRes = await fetch(`${PAYMENT_SERVICE_URL}/api/payments/charge`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...MOCK_SESSION_HEADERS },
+      body: JSON.stringify({ orderId: userId, amount: cart.total, method: 'card' }),
+    });
+    if (!paymentRes.ok) {
+      const status = paymentRes.status === 402 ? 402 : 502;
+      const body = await paymentRes.json().catch(() => ({}));
+      return res.status(status).json({ error: body.error || 'Payment failed' });
+    }
+    const paymentBody = await paymentRes.json();
+    paymentTransactionId = paymentBody.transactionId;
+  } catch (err) {
+    return res.status(502).json({ error: 'Could not reach payment service' });
+  }
+
   try {
     const orderRes = await fetch(`${ORDER_SERVICE_URL}/api/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...MOCK_SESSION_HEADERS },
-      body: JSON.stringify(orderPayload),
+      body: JSON.stringify({ ...orderPayload, paymentTransactionId }),
     });
 
     if (!orderRes.ok) {
